@@ -26,8 +26,11 @@ requirements:
     - scandir  # [py<35]
     - typing  # [py<35]
 
+# Windows path assertion
+# WindowsPath('C:/cygwin64/home/builder-admin') != WindowsPath('C:/Users/builder-admin')
 {% set SKIP_TEST_WIN64 = [
-    "test_expanduser_common"
+    "test_expanduser_common",
+    "test_home"
 ] %}
 
 test:
