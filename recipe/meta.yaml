@@ -23,6 +23,7 @@ requirements:
   run:
     - python
     - six
+  run_constrained:
     - scandir  # [py<35]
     - typing  # [py<35]
 
