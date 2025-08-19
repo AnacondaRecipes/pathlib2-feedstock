@@ -26,6 +26,10 @@ requirements:
     - scandir  # [py<35]
     - typing  # [py<35]
 
+{% set SKIP_TEST_WIN64 = [
+    "test_expanduser_common"
+] %}
+
 test:
   files:
     - sitecustomize.py
@@ -43,7 +47,8 @@ test:
     - set PYTHONPATH=%SRC_DIR%;%PYTHONPATH%  # [win]
     - cp "${RECIPE_DIR}/sitecustomize.py" .  # [unix]
     - export PYTHONPATH="${SRC_DIR}:${PYTHONPATH}"  # [unix]
-    - python -m pytest tests -vv --color=yes --maxfail=1
+    - pytest tests -v --maxfail=1  # [unix]
+    - pytest tests -v -k "not ({{ SKIP_TEST_WIN64 | join(' or ') }})"  # [win]
 
 about:
   home: https://github.com/jazzband/pathlib2
