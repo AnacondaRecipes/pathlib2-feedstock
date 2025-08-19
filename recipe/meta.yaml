@@ -11,7 +11,7 @@ source:
 
 build:
   number: 0
-  # skip: True  # [py<35]
+  skip: True  # [py<35]
   script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation --ignore-installed --no-cache-dir -vv
 
 requirements:
@@ -27,13 +27,21 @@ requirements:
     - typing  # [py<35]
 
 test:
+  files:
+    - sitecustomize.py
+  source_files:
+    - tests
   imports:
     - pathlib2
   requires:
     - pip
-    - mock  # [py<33]
+    - pytest
   commands:
     - pip check
+    - python -c "from importlib.metadata import version; assert(version('{{ name }}')=='{{ version }}')"
+    - cp "${RECIPE_DIR}/sitecustomize.py" .
+    - export PYTHONPATH="${SRC_DIR}:${PYTHONPATH}"
+    - python -m pytest tests -vv --color=yes --maxfail=1
 
 about:
   home: https://github.com/jazzband/pathlib2
