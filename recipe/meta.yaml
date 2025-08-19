@@ -27,7 +27,8 @@ requirements:
     - typing  # [py<35]
 
 # Windows path assertion
-# WindowsPath('C:/cygwin64/home/builder-admin') != WindowsPath('C:/Users/builder-admin')
+# WindowsPath('C:/cygwin64/home/builder-admin') != 
+# WindowsPath('C:/Users/builder-admin')
 {% set SKIP_TEST_WIN64 = [
     "test_expanduser_common",
     "test_home"
@@ -46,11 +47,9 @@ test:
   commands:
     - pip check
     - python -c "from importlib.metadata import version; assert(version('{{ name }}')=='{{ version }}')"
-    - cp "%RECIPE_DIR%/sitecustomize.py" .  # [win]
-    - set PYTHONPATH=%SRC_DIR%;%PYTHONPATH%  # [win]
-    - cp "${RECIPE_DIR}/sitecustomize.py" .  # [unix]
-    - export PYTHONPATH="${SRC_DIR}:${PYTHONPATH}"  # [unix]
-    - pytest tests -v --maxfail=1  # [unix]
+    - cp "${RECIPE_DIR}/sitecustomize.py" . && export PYTHONPATH="${SRC_DIR}:${PYTHONPATH}"  # [unix]
+    - cp "%RECIPE_DIR%/sitecustomize.py" . && set PYTHONPATH=%SRC_DIR%;%PYTHONPATH%  # [win]
+    - pytest tests -v  # [unix]
     - pytest tests -v -k "not ({{ SKIP_TEST_WIN64 | join(' or ') }})"  # [win]
 
 about:
