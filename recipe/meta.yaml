@@ -1,16 +1,18 @@
-{% set version = "2.3.6" %}
+{% set name = "pathlib2" %}
+{% set version = "2.3.7.post1" %}
 
 package:
-  name: pathlib2
+  name: {{ name|lower }}
   version: {{ version }}
 
 source:
-  url: https://pypi.io/packages/source/p/pathlib2/pathlib2-{{ version }}.tar.gz
-  sha256: 7d8bcb5555003cdf4a8d2872c538faa3a0f5d20630cb360e518ca3b981795e5f
+  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 9fe0edad898b83c0c3e199c842b27ed216645d2e177757b2dd67384d4113c641
 
 build:
-  number: 2
-  script: "{{ PYTHON }} -m pip install . --no-deps --ignore-installed -vv"
+  number: 0
+  # skip: True  # [py<35]
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation --ignore-installed --no-cache-dir -vv
 
 requirements:
   host:
@@ -21,29 +23,30 @@ requirements:
   run:
     - python
     - six
-    - scandir  # [py27]
+    - scandir  # [py<35]
+    - typing  # [py<35]
 
 test:
   imports:
     - pathlib2
   requires:
     - pip
+    - mock  # [py<33]
   commands:
     - pip check
 
 about:
-  home: https://github.com/mcmtroffaes/pathlib2
+  home: https://github.com/jazzband/pathlib2
   license: MIT
   license_family: MIT
   license_file: LICENSE.rst
-  summary: "Fork of pathlib aiming to support the full stdlib Python API"
+  summary: Fork of pathlib aiming to support the full stdlib Python API
   description: |
     The goal of pathlib2 is to provide a backport of standard pathlib module which
     tracks the standard library module, so all the newest features of the standard
     pathlib can be used also on older Python versions.
-  doc_url: https://pypi.python.org/pypi/pathlib2/
-  doc_source_url: https://github.com/mcmtroffaes/pathlib2/blob/develop/README.rst
-  dev_url: https://github.com/mcmtroffaes/pathlib2
+  doc_url: https://github.com/jazzband/pathlib2/tree/develop/docs
+  dev_url: https://github.com/jazzband/pathlib2
 
 extra:
   recipe-maintainers:
