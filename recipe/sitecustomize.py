@@ -1,3 +1,9 @@
+# Pathlib2’s test suite relies on internal test.support helpers (e.g., TESTFN, can_symlink, import_module) 
+# that were moved to test.support.os_helper and test.support.import_helper in Python ≥3.11. 
+# To keep the upstream tests working without patching them, we add a sitecustomize.py during the test phase. 
+# This shim re-exports the missing helpers back into test.support so the tests pass on modern Python, 
+# but it is not included in the built package.
+
 # Shim for Python 3.11+ — restore atributes in test.support,
 # which expect old tests pathlib2.
 
