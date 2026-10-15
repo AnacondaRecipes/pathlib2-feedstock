@@ -30,9 +30,12 @@ requirements:
 # Windows path assertion
 # WindowsPath('C:/cygwin64/home/builder-admin') != 
 # WindowsPath('C:/Users/builder-admin')
+# test_resolve_common creates directory symlinks with bare os.symlink()
+# (no target_is_directory=True), which Windows cannot traverse as a directory.
 {% set SKIP_TEST_WIN64 = [
     "test_expanduser_common",
-    "test_home"
+    "test_home",
+    "test_resolve_common"
 ] %}
 
 test:
