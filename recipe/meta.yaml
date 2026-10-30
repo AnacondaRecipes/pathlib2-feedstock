@@ -10,7 +10,7 @@ source:
   sha256: 9fe0edad898b83c0c3e199c842b27ed216645d2e177757b2dd67384d4113c641
 
 build:
-  number: 0
+  number: 1
   skip: True  # [py<35]
   script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation --ignore-installed --no-cache-dir -vv
 
@@ -30,9 +30,12 @@ requirements:
 # Windows path assertion
 # WindowsPath('C:/cygwin64/home/builder-admin') != 
 # WindowsPath('C:/Users/builder-admin')
+# test_resolve_common creates directory symlinks with bare os.symlink()
+# (no target_is_directory=True), which Windows cannot traverse as a directory.
 {% set SKIP_TEST_WIN64 = [
     "test_expanduser_common",
-    "test_home"
+    "test_home",
+    "test_resolve_common"
 ] %}
 
 test:
@@ -49,7 +52,7 @@ test:
     - pip check
     - python -c "from importlib.metadata import version; assert(version('{{ name }}')=='{{ version }}')"
     - cp "${RECIPE_DIR}/sitecustomize.py" . && export PYTHONPATH="${SRC_DIR}:${PYTHONPATH}"  # [unix]
-    - cp "%RECIPE_DIR%/sitecustomize.py" . && set PYTHONPATH=%SRC_DIR%;%PYTHONPATH%  # [win]
+    - copy "%RECIPE_DIR%\sitecustomize.py" . && set PYTHONPATH=%SRC_DIR%;%PYTHONPATH%  # [win]
     - pytest tests -v  # [unix]
     - pytest tests -v -k "not ({{ SKIP_TEST_WIN64 | join(' or ') }})"  # [win]
 
